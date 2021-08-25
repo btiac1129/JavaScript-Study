@@ -1,0 +1,53 @@
+<!-- 
+    Vanilla JavaScript로 웹 컴포넌트 만들기
+-->
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanilla JavaScript Web Component</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        const $app = document.querySelector("#app");
+
+        let state = {
+            items: ["item1", "item2", "item3", "item4"]
+        }
+
+        const render = () => {
+                const {
+                    items
+                } = state;
+
+                $app.innerHTML = `
+                <ul>
+                    ${items.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+                <button id="append">추가</button>
+            `;
+
+            document.querySelector("#append").addEventListener("click", () => {
+                setState({ items: [...items, `item${items.length + 1}`]})
+            })
+        }
+
+        const setState = (newState) => {
+            state = { ...state, ...newState }; // 덮어쓰기.
+            render(); // setState 후 다시 렌더링.
+        }
+
+        render();
+
+        // 이 코드의 핵심은
+        // (1) state가 변경되면 render를 실행한다.
+        // (2) state는 setState로만 변경해야 한다.
+    </script>
+</body>
+
+</html>
