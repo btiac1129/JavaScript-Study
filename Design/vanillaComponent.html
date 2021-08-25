@@ -14,39 +14,65 @@
 <body>
     <div id="app"></div>
     <script>
-        const $app = document.querySelector("#app");
+        class Component {
+            $target;
+            $state;
 
-        let state = {
-            items: ["item1", "item2", "item3", "item4"]
+            constructor($target) {
+                this.$target = $target;
+                this.setup();
+                this.render();
+            }
+
+            setup() {};
+
+            template() {
+                return "";
+            }
+
+            render() {
+                this.$target.innerHTML = this.template();
+                this.setEvent();
+            }
+
+            setEvent() {}
+
+            setState(newState) {
+                this.$state = {...this.$state,
+                    ...newState
+                };
+                this.render();
+            }
         }
 
-        const render = () => {
-                const {
-                    items
-                } = state;
+        class App extends Component {
+            setup() {
+                this.$state = {
+                    items: ['item1', 'item2']
+                };
+            }
 
-                $app.innerHTML = `
-                <ul>
-                    ${items.map(item => `<li>${item}</li>`).join('')}
-                </ul>
-                <button id="append">추가</button>
-            `;
+            template() {
+                    const {
+                        items
+                    } = this.$state;
+                    return `
+                    <ul>
+                        ${items.map(item => `<li>${item}</li>`).join("")}
+                    </ul>
+                    <button>추가</button>
+                ` 
+            }
 
-            document.querySelector("#append").addEventListener("click", () => {
-                setState({ items: [...items, `item${items.length + 1}`]})
-            })
+            setEvent () {
+                this.$target.querySelector("button").addEventListener("click", () => {
+                    const { items } = this.$state;
+                    this.setState({ items: [ ...items, `item${items.length + 1}` ]})
+                });
+            }
         }
 
-        const setState = (newState) => {
-            state = { ...state, ...newState }; // 덮어쓰기.
-            render(); // setState 후 다시 렌더링.
-        }
-
-        render();
-
-        // 이 코드의 핵심은
-        // (1) state가 변경되면 render를 실행한다.
-        // (2) state는 setState로만 변경해야 한다.
+        new App(document.querySelector("#app"));
     </script>
 </body>
 
